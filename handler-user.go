@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/iufb/rssagg/internal/auth"
 	"github.com/iufb/rssagg/internal/database"
 )
 
@@ -32,5 +33,19 @@ func (apiCnf *apiConfig) handlerCreateUser(w http.ResponseWriter, r *http.Reques
 		return
 
 	}
-	respondWithJson(w, 200, fixJsonResponse(user))
+	respondWithJson(w, 201, databaseUserToUser(user))
+}
+
+func (apiCnf *apiConfig) handlerGetUser(w http.ResponseWriter, r *http.Request) {
+	apiKey, err := auth.GetApiKey(r.Header)
+	if err != nil {
+		respondWithErr(w, 401, "Unauthorized")
+		return
+	}
+	user, err := apiCnf.DB.GetUserByAPIKey(r.Context(), apiKey)
+	if err != nil {
+		respondWithErr(w, 404, "User not found.")
+		return
+	}
+	respondWithJson(w, 200, databaseUserToUser(user))
 }

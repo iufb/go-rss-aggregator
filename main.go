@@ -50,6 +50,9 @@ func main() {
 	v1Router.Get("/users", apiCnf.authMiddleware(apiCnf.handlerGetUser))
 	v1Router.Get("/feeds", apiCnf.authMiddleware(apiCnf.handlerGetFeeds))
 	v1Router.Post("/feeds", apiCnf.authMiddleware(apiCnf.handlerCreateFeed))
+	v1Router.Post("/feedFollow", apiCnf.authMiddleware(apiCnf.handlerCreateFeedFollow))
+	v1Router.Get("/feedFollow", apiCnf.authMiddleware(apiCnf.handlerGetFeedFollows))
+	v1Router.Delete("/feedFollow/{feedFollowId}", apiCnf.authMiddleware(apiCnf.handlerDeleteFeedFollow))
 	router.Mount("/v1", v1Router)
 
 	srv := &http.Server{
